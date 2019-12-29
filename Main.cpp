@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <functional> // for std::placeholders
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
@@ -39,5 +40,42 @@ TEST_CASE("Composition"){
 /*for (int i=0 ; i<10 ; ++i){
     
 }*/
+
+// ================================================================
+// Starting to implement the TIC TAC TOE problem
+
+const std::vector<char> board_x = { 'X', 'X', 'X',
+                                    'X', 'X', 'X',
+                                    'X', 'X', 'X'};
+
+
+const std::vector<char> board = { 'X', ' ', 'O',
+                                  'X', 'O', ' ',
+                                  ' ', ' ', ' '};
+
+auto isX = [](const char& elem){ return elem == 'X'; }; 
+// Showcases  the use of std::all_of()
+TEST_CASE("Is X?"){
+    CHECK_EQ( std::all_of( board.begin(), board.end(), isX), false );
+    CHECK_EQ( std::all_of( board_x.begin(), board_x.end(), isX), true );
+}
+
+auto lineFilledWithX = std::bind(
+        ttt::lineFilledWith, std::placeholders::_1, 'X' );
+auto lineFilledWithO = std::bind(
+        ttt::lineFilledWith, std::placeholders::_1, 'O' );
+
+// Tests the lineFilledWith method
+TEST_CASE("Line filled with: token (X or O )"){
+    const std::vector<char> all_x = {'X','X','X'};
+    
+    CHECK_EQ( ttt::lineFilledWith(all_x, 'X'), true );
+    CHECK_EQ( lineFilledWithX(all_x), true );
+    CHECK_EQ( lineFilledWithO(all_x), false );
+
+    CHECK_EQ( ttt::getLine( board_x, 0), std::vector<char>{'X','X','X'} );
+}
+
+
 
 
