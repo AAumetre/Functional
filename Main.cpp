@@ -87,12 +87,14 @@ TEST_CASE("Testing the toRange function"){
 TEST_CASE("getCol method"){
     CHECK_EQ( ttt::getCol( board_x, 0), std::vector<char>{'X','X','X'} );
     CHECK_EQ( ttt::getCol( board,   1), std::vector<char>{' ','O',' '} );
-    std::cout   << "'" << ttt::getCol( board, 1 ).at(0) << "'" 
-                << "'" << ttt::getCol( board, 1 ).at(1) << "'"
-                << "'" << ttt::getCol( board, 1 ).at(2) << "'"
-                                                    << std::endl;
 }
 
+// Testing the getDia method
+TEST_CASE("getDia method"){
+    CHECK_EQ( ttt::getDia( board_x, 0), std::vector<char>{'X','X','X'} );
+    CHECK_EQ( ttt::getDia( board,   0), std::vector<char>{'X','O',' '} );
+    CHECK_EQ( ttt::getDia( board,   1), std::vector<char>{'O','O',' '} );
+}
 
 
 
