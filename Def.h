@@ -81,6 +81,15 @@ namespace ttt{
         auto boardElem = std::bind( boardAt, board, std::placeholders::_1 );
         return pure::transformAll<Line>( coord, boardElem );
     };
+    
+    // Takes a line/column index and returns a vector with the corresponding
+    // three board coordinates
+    auto boardCoordinates = []( const auto& board,
+                                int group_index,
+                                auto group_method ){
+        const std::vector<int> range = pure::toRange(3);
+        return pure::transformAll<std::vector<int>>( range, group_method );
+    }
 
     // Takes a line index and returns a vector with the corresponding
     // three board coordinates
@@ -113,10 +122,23 @@ namespace ttt{
     };
     
     auto getCol = [](const auto& board, const int col_index){
+        
         // Get indexes corresponding to that column
         std::vector<int> coord = colCoordinates( board, col_index );
         // Return the corresponding symbols
         auto getter = [board](int a_coord){return board.at( a_coord );};
         return pure::transformAll<Col>(coord, getter);
+        /*
+        auto L_col = [col_index](){
+            
+        };
+        std::vector<int> coord = boardCoordinates( L_col );*/
     };
+
+
+
+
+
+
+
 }
