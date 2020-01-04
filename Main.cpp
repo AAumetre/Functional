@@ -74,7 +74,32 @@ TEST_CASE("Line filled with: token (X or O )"){
     CHECK_EQ( lineFilledWithO(all_x), false );
 
     CHECK_EQ( ttt::getLine( board_x, 0), std::vector<char>{'X','X','X'} );
+    CHECK_EQ( ttt::getLine( board, 1), std::vector<char>{'X','O',' '} );
 }
+
+// Testing the toRange function
+TEST_CASE("Testing the toRange function"){
+    CHECK_EQ( pure::toRange(board), std::vector<int>{0,1,2,3,4,5,6,7,8} );
+    CHECK_EQ( pure::toRange(9), std::vector<int>{0,1,2,3,4,5,6,7,8} );
+}
+
+// Testing the getCol method
+TEST_CASE("getCol method"){
+    CHECK_EQ( ttt::getCol( board_x, 0), std::vector<char>{'X','X','X'} );
+    CHECK_EQ( ttt::getCol( board,   1), std::vector<char>{' ','O',' '} );
+    std::cout   << "'" << ttt::getCol( board, 1 ).at(0) << "'" 
+                << "'" << ttt::getCol( board, 1 ).at(1) << "'"
+                << "'" << ttt::getCol( board, 1 ).at(2) << "'"
+                                                    << std::endl;
+}
+
+
+
+
+
+
+
+
 
 
 
