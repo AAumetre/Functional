@@ -5,7 +5,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
+#include "Pure.h"
 #include "Def.h"
+
 
 TEST_CASE("Increment a value"){
     CHECK_EQ(2, 2);
@@ -30,16 +32,11 @@ TEST_CASE("Multiply and increment"){
 auto fourIncr = [](const int initial_value){
     return pure::cmp( incr, incr )(
             pure::cmp( incr, incr)(
-                initial_value
-                )
-            );
+                        initial_value ) );
 };
 TEST_CASE("Composition"){
     CHECK_EQ( fourIncr(6), 10 );
 }
-/*for (int i=0 ; i<10 ; ++i){
-    
-}*/
 
 // ================================================================
 // Starting to implement the TIC TAC TOE problem
@@ -96,7 +93,53 @@ TEST_CASE("getDia method"){
     CHECK_EQ( ttt::getDia( board,   1), std::vector<char>{'O','O',' '} );
 }
 
+TEST_CASE("toRange test"){
+    CHECK_EQ( std::vector<int>{0,1,2,3,4}, pure::toRange(5) );
+    CHECK_EQ( std::vector<int>{0,1,2,3,4,5,6,7,8}, pure::toRange(board) );
+}
 
+
+TEST_CASE("Concatenation test"){
+    CHECK_EQ(   std::vector<int>{1,2,3,4},
+                pure::concatenate(  std::vector<int>{1,2},
+                                    std::vector<int>{3,4} ) );
+}
+
+// Testing all three
+TEST_CASE("Retrieving lines, columns and diagonals"){
+    SUBCASE( "Testing getAllLines"){
+        std::vector< std::vector<char> > all_lines = ttt::getAllLines( board );
+        for (int i=0 ; i<3 ; ++i ){
+            CHECK_EQ( all_lines.at(i), ttt::getLine( board, i ) );
+        }
+    }
+    SUBCASE( "Testing getAllCols"){
+        std::vector< std::vector<char> > all_cols = ttt::getAllCols( board );
+        for (int i=0 ; i<3 ; ++i ){
+            CHECK_EQ( all_cols.at(i), ttt::getCol( board, i ) );
+        }
+    }
+    SUBCASE( "Testing getAllDias"){
+        std::vector< std::vector<char> > all_dias = ttt::getAllDias( board );
+        for (int i=0 ; i<2 ; ++i ){
+            CHECK_EQ( all_dias.at(i), ttt::getDia( board, i ) );
+        }
+    }
+    SUBCASE( "Getting everything now" ){
+        auto all_groups = ttt::getAllGroups( board );
+        CHECK_EQ( all_groups,
+                std::vector< std::vector<char> >{
+                    {'X', ' ', 'O'},
+                    {'X', 'O', ' '},
+                    {' ', ' ', ' '},
+                    {'X', 'X', ' '},
+                    {' ', 'O', ' '},
+                    {'O', ' ', ' '},
+                    {'X', 'O', ' '},
+                    {'O', 'O', ' '},
+                });    
+    }
+}
 
 
 

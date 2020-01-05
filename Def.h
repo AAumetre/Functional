@@ -1,66 +1,8 @@
 #pragma once
 #include <algorithm> 	// copy_if
-#include <tuple> 	// tuple
 #include <functional> // placeholders
 #include <numeric> // iota
 
-namespace pure{
-    template< class CollectionType, class UnaryPredicate >
-            const CollectionType filter(const CollectionType& input,
-                            UnaryPredicate filter_function) {
-                    CollectionType filtered;
-                    std::copy_if(input.begin(), input.end(),
-                                    std::back_inserter(filtered),
-                                    filter_function);
-                    return filtered;
-            }
-
-    /*template< typename T, template<class> class CollectionType>
-            const T sum(const CollectionType<T>& input, const T& init = 0) {
-                    return std::accumulate(input.begin(), input.end(), init);
-            }*/
-
-    template< typename T >
-            bool ff_pair(T number) {
-                    return (number%2 == 0);
-            }
-
-    const std::tuple< int, int > incrementBoth(const int& first,
-            const int& second) {
-            return std::make_tuple(first + 1, second + 1);
-    }
-
-    template< class F, class G>
-    auto cmp( F f, G g){
-        return [=](auto value){return f(g(value));};
-    };
-
-    // Applies std::transform to every element of "source", using the lambda
-    template<typename Destination>
-    auto transformAll = [](auto const& source, auto lambda){
-        Destination result;
-        result.reserve( source.size() );
-        std::transform( source.begin(), source.end(), 
-                std::back_inserter(result), lambda );
-        return result;
-    };
-
-    // Creates a "range"
-    // !!! was defined as a lambda in the example
-    template< class T >
-    std::vector<int> toRange( const T& collection ){
-        std::vector<int> range( collection.size() );
-        std::iota( begin(range), end(range), 0 );
-        return range;
-    }
-    //template<const int n>
-    std::vector<int> toRange( const int n ){
-        std::vector<int> range( n );
-        std::iota( begin(range), end(range), 0);
-        return range;
-    }
-
-}
 
 namespace ttt{
     using Line  = std::vector<char>;
@@ -121,8 +63,29 @@ namespace ttt{
         return pure::transformAll<Col>(coord, getter);
     };
 
+    auto getAllLines = []( const auto& board ){
+        auto boundGetter = std::bind( getLine, board, std::placeholders::_1 );
+        return pure::transformAll<std::vector<Line>>(
+                pure::toRange( board_size ), boundGetter );
+    };
+    
+    auto getAllCols = []( const auto& board ){
+        auto boundGetter = std::bind( getCol, board, std::placeholders::_1 );
+        return pure::transformAll<std::vector<Col>>(
+                pure::toRange( board_size ), boundGetter );
+    };
+    
+    auto getAllDias = []( const auto& board ){
+        auto boundGetter = std::bind( getDia, board, std::placeholders::_1 );
+        return pure::transformAll<std::vector<Line>>(
+                pure::toRange( 2 ), boundGetter );
+    };
 
-
-
+    // Order is: lines, columns and diagonals, as a series of 3 elements
+    auto getAllGroups = []( const auto& board ){
+        auto all_groups = pure::concatenate(    getAllLines(board),
+                                                getAllCols(board) );
+        return pure::concatenate( all_groups, getAllDias(board) );
+    };
 
 }
