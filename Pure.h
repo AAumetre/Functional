@@ -64,6 +64,11 @@ namespace pure{
         return result;
     };
 
+    // Applies std::any_of to an entire collection
+    auto anyOf = []( const auto& collection, const auto& fn ){
+        return std::any_of(collection.begin(), collection.end(), fn);
+    };
+
     // Split a list into a list of size-sized lists
     /*template< typename T>
     auto split = []( T list, int size ){
@@ -72,4 +77,9 @@ namespace pure{
         return result;
     };*/
 
+    auto accumulateAll = [](auto source, auto lambda){
+        return std::accumulate( source.begin(), source.end(),
+                typename decltype(source)::value_type(),
+                lambda );
+    };
 }

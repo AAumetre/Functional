@@ -41,14 +41,14 @@ TEST_CASE("Composition"){
 // ================================================================
 // Starting to implement the TIC TAC TOE problem
 
-const std::vector<char> board_x = { 'X', 'X', 'X',
-                                    'X', 'X', 'X',
-                                    'X', 'X', 'X'};
+const ttt::Board board_x = { 'X', 'X', 'X',
+                             'X', 'X', 'X',
+                             'X', 'X', 'X'};
 
 
-const std::vector<char> board = { 'X', ' ', 'O',
-                                  'X', 'O', ' ',
-                                  ' ', ' ', ' '};
+const ttt::Board board = { 'X', ' ', 'O',
+                           'X', 'O', ' ',
+                           ' ', ' ', ' '};
 
 auto isX = [](const char& elem){ return elem == 'X'; }; 
 // Showcases  the use of std::all_of()
@@ -141,11 +141,39 @@ TEST_CASE("Retrieving lines, columns and diagonals"){
     }
 }
 
+auto xWins = [](const auto& board){
+    return pure::anyOf( ttt::getAllGroups( board ), lineFilledWithX );
+};
 
+TEST_CASE("Who won?"){
+    std::vector<char> my_chars {'a', 'b', 'c'};
+    CHECK(std::any_of(my_chars.begin(), my_chars.end(),
+                [](char tok){return tok == 'a';} ));
+    CHECK(!std::any_of(my_chars.begin(), my_chars.end(),
+                [](char tok){return tok == 'd';} ));
+    ttt::Board x_board {    'X', ' ', 'O',
+                            'X', 'O', ' ',
+                            'X', ' ', ' ' };
+    CHECK( xWins( x_board ));
+}
 
+TEST_CASE("Printing out a board"){
+    SUBCASE("General ide atesting"){
+        ttt::Line line {' ','X','O'};
+        CHECK_EQ( " XO", ttt::lineToString(line) );
 
-
-
+        std::vector<ttt::Line> vec_line {line, line, line};
+        std::vector<std::string> expected_vec_0 {" XO", " XO", " XO"};
+        CHECK_EQ( ttt::boardToLineStrings( vec_line ), expected_vec_0 );
+    }
+    SUBCASE("Applied to the game"){
+        // Need to split the board into lines first...
+        std::vector< ttt::Line > my_board = ttt::getAllLines( board );
+        std::string expected {"X O\nXO \n   \n"};
+        CHECK_EQ( expected, ttt::boardToString( my_board ) );
+        std::cout << ttt::boardToString( my_board ) << std::endl;
+    }
+}
 
 
 

@@ -7,6 +7,7 @@
 namespace ttt{
     using Line  = std::vector<char>;
     using Col   = std::vector<char>;
+    using Board = std::vector<char>;
     const int board_size = 3;
 
     auto lineFilledWith = []( const auto& line, const auto token ){
@@ -87,5 +88,22 @@ namespace ttt{
                                                 getAllCols(board) );
         return pure::concatenate( all_groups, getAllDias(board) );
     };
+    
+    auto lineToString = [](const auto& line){
+        return pure::transformAll<std::string>( line, 
+                [](const auto tok)->char{ return tok; } );
+    };
 
+    auto boardToLineStrings = [](const auto board)->std::vector<std::string>{
+        return pure::transformAll<std::vector<std::string>>( board,
+                lineToString );
+    };
+
+    auto boardToString = [](const auto board){
+        auto lines_as_strings = boardToLineStrings( board );
+        auto appendReturn = [](std::string current, std::string a_line){
+            return current + a_line + "\n";
+        };
+        return pure::accumulateAll( lines_as_strings, appendReturn );
+    };
 }
