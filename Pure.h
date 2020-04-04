@@ -3,6 +3,7 @@
 #include <tuple> 	// tuple
 #include <functional> // placeholders
 #include <numeric> // iota
+#include <optional> // nullopt & optional
 
 namespace pure{
     template< class CollectionType, class UnaryPredicate >
@@ -81,5 +82,14 @@ namespace pure{
         return std::accumulate( source.begin(), source.end(),
                 typename decltype(source)::value_type(),
                 lambda );
+    };
+
+    auto findIf = [](const auto& coll, const auto& fn){
+        auto result = std::find_if(coll.begin(), coll.end(), fn );
+        return (result==coll.end()) ? std::nullopt : std::optional(*result);
+    };
+
+    auto noneOf = [](const auto& coll, auto& lambda){
+        return std::none_of( coll.begin(), coll.end(), lambda );
     };
 }

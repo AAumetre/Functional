@@ -145,16 +145,18 @@ auto xWins = [](const auto& board){
     return pure::anyOf( ttt::getAllGroups( board ), lineFilledWithX );
 };
 
+ttt::Board x_wins_board {   'X', ' ', 'O',
+                            'X', 'O', ' ',
+                            'X', ' ', ' ' };
+
 TEST_CASE("Who won?"){
     std::vector<char> my_chars {'a', 'b', 'c'};
     CHECK(std::any_of(my_chars.begin(), my_chars.end(),
                 [](char tok){return tok == 'a';} ));
     CHECK(!std::any_of(my_chars.begin(), my_chars.end(),
                 [](char tok){return tok == 'd';} ));
-    ttt::Board x_board {    'X', ' ', 'O',
-                            'X', 'O', ' ',
-                            'X', ' ', ' ' };
-    CHECK( xWins( x_board ));
+   
+    CHECK( xWins( x_wins_board ));
 }
 
 TEST_CASE("Printing out a board"){
@@ -175,5 +177,37 @@ TEST_CASE("Printing out a board"){
     }
 }
 
+// Useful map to display messages
+std::map<std::string, ttt::Line> lines_description {
+    {"First line",      ttt::getLine(   x_wins_board, 0 )},
+    {"Second line",     ttt::getLine(   x_wins_board, 1 )},
+    {"Third line",      ttt::getLine(   x_wins_board, 2 )},
+    {"First column",    ttt::getCol(    x_wins_board, 0 )},
+    {"Second column",   ttt::getCol(    x_wins_board, 1 )},
+    {"Third column",    ttt::getCol(    x_wins_board, 2 )},
+    {"First diagonal",  ttt::getDia(    x_wins_board, 0 )},
+    {"Second diagonal", ttt::getDia(    x_wins_board, 1 )},
+};
 
+TEST_CASE("How did X win?"){
+    std::vector<ttt::Line> my_board = ttt::getAllLines( board );
+    auto found = pure::findIf( lines_description,
+            [](auto value){ return lineFilledWithX(value.second); } );
+    std::string message = "Hello";
+    if (found.has_value()){
+        std::cout << "Win" << std::endl;
+        message = found->first;
+    } else {
+        std::cout << "No win..." << std::endl;
+    }
+    std::cout << message << std::endl;
+}
 
+TEST_CASE("Are these boards full?"){
+    // Transform boards as vectors of Lines as usual
+    std::vector<ttt::Line> my_board = ttt::getAllLines( board );
+    std::vector<ttt::Line> my_other_board = ttt::getAllLines( board_x );
+
+    CHECK( !ttt::boardIsFull( board ) );
+    CHECK( ttt::boardIsFull( board_x ) );
+}

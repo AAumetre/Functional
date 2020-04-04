@@ -94,7 +94,7 @@ namespace ttt{
                 [](const auto tok)->char{ return tok; } );
     };
 
-    auto boardToLineStrings = [](const auto board)->std::vector<std::string>{
+    auto boardToLineStrings = [](const auto& board)->std::vector<std::string>{
         return pure::transformAll<std::vector<std::string>>( board,
                 lineToString );
     };
@@ -105,5 +105,11 @@ namespace ttt{
             return current + a_line + "\n";
         };
         return pure::accumulateAll( lines_as_strings, appendReturn );
+    };
+
+    auto boardIsFull = []( const auto& board ){
+        auto isBlank = [](const auto tok){return tok==' ';};
+        // Problem here, anyOf(board,...) is a Line
+        return !pure::anyOf( board, isBlank ); 
     };
 }
